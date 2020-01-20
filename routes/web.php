@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('app');
 });
+
+Route::get('/domains', 'DomainsController@index');
+Route::get('/domain/add', 'DomainsController@add');
+Route::get('/domain/create', 'DomainsController@create');

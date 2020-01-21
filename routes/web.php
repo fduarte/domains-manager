@@ -18,3 +18,9 @@ Route::get('/', function () {
 Route::get('/domains', 'DomainsController@index');
 Route::get('/domain/add', 'DomainsController@add');
 Route::get('/domain/create', 'DomainsController@create');
+
+/*
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
+*/

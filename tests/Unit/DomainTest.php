@@ -11,11 +11,7 @@ use Tests\TestCase;
  */
 class DomainTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+
     public function testDomain()
     {
         $this->assertDatabaseHas('domains', [

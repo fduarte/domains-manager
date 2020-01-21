@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClientsServicesTable extends Migration
+class CreateClientServiceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateClientsServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('clients_services', function (Blueprint $table) {
+        Schema::create('client_service', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             // Foreign Key client_id
@@ -32,6 +32,8 @@ class CreateClientsServicesTable extends Migration
                 ->on('services')
                 ->onDelete('cascade');
 
+            $table->unique(['client_id', 'service_id']);
+
             $table->datetime('created_at')->default(\Carbon\Carbon::now());
             $table->datetime('updated_at')->default(\Carbon\Carbon::now());
         });
@@ -44,6 +46,6 @@ class CreateClientsServicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clients_services');
+        Schema::dropIfExists('client_service');
     }
 }

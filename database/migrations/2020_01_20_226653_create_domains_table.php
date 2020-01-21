@@ -34,7 +34,7 @@ class CreateDomainsTable extends Migration
             $table->string('admin_contact_email')->nullable();
 
             // clientPaid
-            $table->tinyInteger('client_paid')->default(0);
+            $table->tinyInteger('client_paid')->nullable()->default(0);
 
             // clientPaidDate
             $table->date('client_paid_date')->nullable();

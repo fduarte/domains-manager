@@ -15,11 +15,12 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('client_name');
+            $table->string('name');
             $table->string('company_name')->nullable();
             $table->string('email');
             $table->char('phone', 15)->nullable();
-            $table->timestamps();
+            $table->datetime('created_at')->default(\Carbon\Carbon::now());
+            $table->datetime('updated_at')->default(\Carbon\Carbon::now());
         });
     }
 

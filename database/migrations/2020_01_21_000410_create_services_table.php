@@ -18,7 +18,7 @@ class CreateServicesTable extends Migration
             $table->string('name')->nullable();
             $table->integer('price')->nullable();
             $table->datetime('created_at')->default(\Carbon\Carbon::now());
-            $table->datetime('updated_at');
+            $table->datetime('updated_at')->default(\Carbon\Carbon::now());
         });
     }
 

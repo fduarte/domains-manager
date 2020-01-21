@@ -33,7 +33,7 @@ class CreateClientsServicesTable extends Migration
                 ->onDelete('cascade');
 
             $table->datetime('created_at')->default(\Carbon\Carbon::now());
-            $table->datetime('updated_at');
+            $table->datetime('updated_at')->default(\Carbon\Carbon::now());
         });
     }
 

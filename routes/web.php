@@ -24,3 +24,17 @@ Route::get('/debug-sentry', function () {
     throw new Exception('My first Sentry error!');
 });
 */
+
+Route::get('/redirect', function (\Illuminate\Http\Request $request) {
+    $request->session()->put('state', $state = \Illuminate\Support\Str::random(40));
+
+    $query = http_build_query([
+        'client_id' => '3',
+        'redirect_uri' => 'http://domains-manager.test/auth/callback',
+        'response_type' => 'dr4tx7Rfkkx9VUlLItP9Sve4lQX0UWa8gY9m8t3F',
+        'scope' => '',
+        'state' => $state,
+    ]);
+
+    return redirect('http://domains-manager.test/oauth/authorize?'.$query);
+});

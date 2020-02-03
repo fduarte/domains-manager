@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WhoisController extends Controller
 {
@@ -31,22 +32,44 @@ class WhoisController extends Controller
 
         if ($response->getStatusCode() != 200) {
             // @todo - Make sure this gets logged into Sentry
-            return 'WHOIS API error.';
+            $message = 'WHOIS API error code: ' . $response->getStatusCode();
+            Log::error($message);
+            return $message;
         }
 
-        // Save domain's expiresDate
+        // Save domain's expiresDate, createdData
         $res = json_decode($response->getBody()->getContents());
 
-        if (! isset($res->WhoisRecord->expiresDate)) {
-            return 'WHOIS Expires Date not available';
+        if (isset($res->WhoisRecord->expiresDate)) {
+            $expiresDate = $res->WhoisRecord->expiresDate;
+            $createdDate = $res->WhoisRecord->createdDate;
+
+            $expiresDate = Carbon::create($expiresDate)->format('Y-m-d');
+            $createdDate = Carbon::create($createdDate)->format('Y-m-d');
+        } elseif (isset($res->WhoisRecord->registryData->expiresDate)) {
+
+            // .pt domains
+            $expiresDate = $res->WhoisRecord->registryData->expiresDate;
+            $createdDate = $res->WhoisRecord->registryData->createdDate;
+
+            $expiresDate = Carbon::createFromFormat('d/m/Y H:i:s', $expiresDate)->format('Y-m-d');
+            $createdDate = Carbon::createFromFormat('d/m/Y H:i:s', $createdDate)->format('Y-m-d');
+        } else {
+            $message = 'WHOIS Expires/Created Date not available';
+            Log::error($message);
+            return $message;
         }
 
-        $expiresDate = Carbon::createFromTimeString($res->WhoisRecord->expiresDate)->format('Y-m-d');
         $domain = Domain::where('domain_name', $domainName)
-                        ->update(['domain_expires_date' => $expiresDate]);
+                        ->update([
+                            'domain_expires_date' => $expiresDate,
+                            'domain_created_date' => $createdDate
+                        ]);
 
-        // @todo - Monolog INFO
+        Log::info('WHOIS call successful and domain updated: ' . $domainName);
 
-        return $response;
+        return response()->json([
+            'status' => 'OK'
+        ]);
     }
 }

@@ -37,4 +37,16 @@ class DomainsController extends Controller
         $domain->create($data);
     }
 
+    public function add()
+    {
+        return view('domains.add');
+    }
+
+    public function create()
+    {
+        $domain = new Domain();
+        $domain->domain_name = request('domain_name');
+        $domain->domain_created_date = request('domain_created_date');
+    }
+
 }

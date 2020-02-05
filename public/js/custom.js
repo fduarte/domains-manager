@@ -1,5 +1,5 @@
 
-$(document).ready(function(){
+$(document).ready(function() {
 
     $(".whois").click(function(){
         var domainTd = $(this).closest('td').prev('td').prev('td');
@@ -7,6 +7,18 @@ $(document).ready(function(){
         alert('Running WHOIS on domain: ' + domainName );
         getWhois(domainTd, domainName);
     });
+
+    // $('#domains-table').DataTable({
+    //     processing: true,
+    //     serverSide: true,
+    //     ajax: "{{ route('domain.index') }}",
+    //     columns: [
+    //         { data: 'client', name: 'client' },
+    //         { data: 'domain_name', name: 'domain_name' },
+    //         { data: 'domain_expires_date', name: 'domain_expires_date' },
+    //         { data: 'action', name: 'action', orderable: false },
+    //     ]
+    // });
 
 });
 
@@ -35,3 +47,5 @@ function getWhois(domainTd, domainName) {
         domainTd.addClass('text-danger');
     });
 }
+
+

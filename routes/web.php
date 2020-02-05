@@ -38,3 +38,6 @@ Route::get('/redirect', function (\Illuminate\Http\Request $request) {
 
     return redirect('http://domains-manager.test/oauth/authorize?'.$query);
 });
+
+// Domains resources (i.e data to populate datatables)
+Route::resource('domain', 'DomainsController');

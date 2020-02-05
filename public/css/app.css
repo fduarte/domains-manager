@@ -39,3 +39,7 @@
     cursor: pointer;
 }
 
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ddd;
+}
+

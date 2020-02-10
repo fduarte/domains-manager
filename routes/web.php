@@ -15,9 +15,9 @@ Route::get('/', function () {
     return view('app');
 });
 
-Route::get('/', 'DomainsController@index');
-Route::get('/domain/add', 'DomainsController@add');
-Route::get('/domain/create', 'DomainsController@create');
+Route::get('/', 'DomainController@index');
+Route::get('/domain/add', 'DomainController@add');
+Route::get('/domain/create', 'DomainController@create');
 
 /*
 Route::get('/debug-sentry', function () {
@@ -25,6 +25,7 @@ Route::get('/debug-sentry', function () {
 });
 */
 
+/*
 Route::get('/redirect', function (\Illuminate\Http\Request $request) {
     $request->session()->put('state', $state = \Illuminate\Support\Str::random(40));
 
@@ -38,6 +39,7 @@ Route::get('/redirect', function (\Illuminate\Http\Request $request) {
 
     return redirect('http://domains-manager.test/oauth/authorize?'.$query);
 });
+*/
 
 // Domains resources (i.e data to populate datatables)
-Route::resource('domain', 'DomainsController');
+Route::resource('domain', 'DomainController');

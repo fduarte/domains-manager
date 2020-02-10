@@ -6,7 +6,7 @@ use App\Domain;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-class DomainsController extends Controller
+class DomainController extends Controller
 {
 
     /**
@@ -38,7 +38,7 @@ class DomainsController extends Controller
                 ->make(true);
         }
 
-        return view('domains.index');
+        return view('domain.index');
     }
 
 
@@ -49,7 +49,7 @@ class DomainsController extends Controller
 
         $domain->save();
 
-        return redirect('/domains');
+        return redirect('/');
 
     }
 

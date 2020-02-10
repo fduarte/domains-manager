@@ -8,14 +8,30 @@ use App\Http\Resources\DomainResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class DomainsController extends Controller
+class DomainController extends Controller
 {
+    protected $domain;
 
+    public function __construct(Domain $domain)
+    {
+        $this->domain = $domain;
+    }
+
+    public function index(Request $request)
+    {
+        $query = $this->domain->orderBy($request->column, $request->order);
+        $domains = $query->paginate($request->per_page ?? 5);
+
+        return DomainResource::collection($domains);
+    }
+
+    /*
     public function index()
     {
 //        return DomainResource::collection(auth()->domains()->with('creator')->latest()->paginate(4));
         return DomainResource::collection(Domain::all());
     }
+    */
 
     public function store(Request $request)
     {

@@ -19,19 +19,15 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
-        $query = $this->domain->orderBy($request->column, $request->order);
-        $domains = $query->paginate($request->per_page ?? 5);
 
-        return DomainResource::collection($domains);
-    }
+        $query = Domain::join('clients as client', 'client_id', '=', 'client.id')
+            ->orderBy($request->column, $request->order)
+            ->select('domains.*')
+            ->with('client')
+            ->paginate($request->per_page ?? 5);
 
-    /*
-    public function index()
-    {
-//        return DomainResource::collection(auth()->domains()->with('creator')->latest()->paginate(4));
-        return DomainResource::collection(Domain::all());
+        return DomainResource::collection($query);
     }
-    */
 
     public function store(Request $request)
     {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 export default class DataTable extends Component {
+
     constructor(props) {
         super(props);
 
@@ -18,7 +19,7 @@ export default class DataTable extends Component {
             },
             first_page: 1,
             current_page: 1,
-            sorted_column: this.props.columns[0],
+            sorted_column: this.props.columns[0].fieldName,
             offset: 4,
             order: 'asc',
         };
@@ -26,6 +27,7 @@ export default class DataTable extends Component {
 
     fetchEntities() {
         let fetchUrl = `${this.props.url}/?page=${this.state.current_page}&column=${this.state.sorted_column}&order=${this.state.order}&per_page=${this.state.entities.meta.per_page}`;
+
         axios.get(fetchUrl)
             .then(response => {
                 this.setState({ entities: response.data });
@@ -40,7 +42,8 @@ export default class DataTable extends Component {
     }
 
     columnHead(value) {
-        return value.split('_').join(' ').toUpperCase()
+        let header = value.split('_').join(' ');
+        return header.split('.').join(' ').toUpperCase();
     }
 
     pagesNumbers() {
@@ -69,25 +72,46 @@ export default class DataTable extends Component {
     tableHeads() {
         let icon;
         if (this.state.order === 'asc') {
-            icon = <i className="fa fa-arrow-up"></i>;
+            icon = <i className="fa fa-arrow-circle-up ml-1"></i>;
         } else {
-            icon = <i className="fa fa-arrow-down"></i>;
+            icon = <i className="fa fa-arrow-circle-down ml-1"></i>;
         }
 
-        return this.props.columns.map(column => {
-            return <th className="table-head" key={column} onClick={() => this.sortByColumn(column)}>
-                { this.columnHead(column) }
-                { column === this.state.sorted_column && icon }
+        let cols = this.props.columns.map(obj => {
+            return <th className="table-head" key={obj.fieldName} onClick={() => this.sortByColumn(obj.fieldName)}>
+                { this.columnHead(obj.headerName) }
+                { obj.fieldName === this.state.sorted_column && icon }
             </th>
         });
+
+        let actions = <th className="table-head" key="actions">Actions</th>;
+
+        cols.push(actions);
+
+        return cols;
+        // console.log(cols);
     }
 
     domainList() {
         if (this.state.entities.data.length) {
+
+            let iconEdit = <i className="fa fa-edit"></i>;
+            let iconDelete = <i className="fa fa-trash"></i>;
+            let iconRefresh = <i className="fa fa-retweet"></i>;
+
             return this.state.entities.data.map(domain => {
                 return <tr>
                     <td>{domain['domain_name']}</td>
+                    <td>{domain.client.company_name}</td>
+                    <td>{domain.client.name}</td>
+                    <td>{domain.client.email}</td>
+                    <td>{domain.client.phone}</td>
                     <td>{domain['domain_expires_date']}</td>
+                    <td>
+                        <a href={'/domain/edit/' + domain['id']}> {iconEdit}</a>
+                        <a href={'/domain/delete/' + domain['id']}> {iconDelete}</a>
+                        <a href={'/domain/refresh/' + domain['id']}> {iconRefresh}</a>
+                    </td>
                 </tr>
             })
         } else {
@@ -116,8 +140,8 @@ export default class DataTable extends Component {
     render() {
         return (
             <div className="data-table">
-                <table className="table table-sm">
-                    <thead>
+                <table className="table table-sm table-responsive-sm table-stripped table-hover">
+                    <thead className="thead-dark">
                     <tr>{ this.tableHeads() }</tr>
                     </thead>
                     <tbody>{ this.domainList() }</tbody>

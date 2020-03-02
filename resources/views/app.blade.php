@@ -47,7 +47,7 @@
         <div id="loader"></div>
 
         <div class="row mt-5">
-            <div class="col-10">
+            <div class="col-12">
 
                 @if (session('status'))
                     <div class="alert">

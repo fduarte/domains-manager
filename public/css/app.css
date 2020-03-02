@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+body {
+  font-size: 0.9rem;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.table-head {
+  font-weight: normal;
+}
+
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)

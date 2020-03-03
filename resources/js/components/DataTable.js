@@ -23,6 +23,8 @@ export default class DataTable extends Component {
             offset: 4,
             order: 'asc',
         };
+
+        // this.handleDomainRefresh = this.handleDomainRefresh.bind(this);
     }
 
     fetchEntities() {
@@ -89,7 +91,6 @@ export default class DataTable extends Component {
         cols.push(actions);
 
         return cols;
-        // console.log(cols);
     }
 
     domainList() {
@@ -108,9 +109,10 @@ export default class DataTable extends Component {
                     <td>{domain.client.phone}</td>
                     <td>{domain['domain_expires_date']}</td>
                     <td>
-                        <a href={'/domain/edit/' + domain['id']}> {iconEdit}</a>
-                        <a href={'/domain/delete/' + domain['id']}> {iconDelete}</a>
-                        <a href={'/domain/refresh/' + domain['id']}> {iconRefresh}</a>
+                        <a href={'/domain/' + domain['id'] + '/edit'}> {iconEdit}</a>
+                        <a href={'/domain/' + domain['id'] + '/destroy' }> {iconDelete}</a>
+                        {/*<a href={'/domain/refresh/' + domain['id']}> {iconRefresh}</a>*/}
+                        <a onClick={() => this.handleDomainRefresh(domain['domain_name'])} > {iconRefresh}</a>
                     </td>
                 </tr>
             })
@@ -119,6 +121,35 @@ export default class DataTable extends Component {
                 <td colSpan={this.props.columns.length} className="text-center">No Records Found.</td>
             </tr>
         }
+    }
+
+    /**
+     * Handles fetching domain data from the WhoIs API using an internal gateway
+     * Updates the domain expiration date (both in the DB and in state)
+     *
+     * @see Api\WhoisController
+     * @param domainName
+     */
+    handleDomainRefresh(domainName) {
+        fetch('api/v1/whois?domainName=' + domainName)
+            .then(response => response.json())
+            .then(res => {
+
+                let domainData = this.state.entities.data.filter((data) => {
+                    // If a matching domainName is found in state, then update its expiration date
+                    if (data.domain_name === domainName) {
+                        return data.domain_expires_date = res.domain_expires_date;
+                    }
+                    return data;
+                })
+
+                this.setState({
+                    entities: {
+                        ...this.state.entities,
+                        data: domainData
+                    }
+                })
+            })
     }
 
     sortByColumn(column) {

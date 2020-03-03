@@ -69,7 +69,8 @@ class WhoisController extends Controller
         Log::info('WHOIS call successful and domain updated: ' . $domainName);
 
         return response()->json([
-            'status' => 'OK'
+            'status' => 'OK',
+            'domain_expires_date' => $expiresDate
         ]);
     }
 }

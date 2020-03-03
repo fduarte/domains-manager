@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 class Domain extends Model
 {
 
+    protected $fillable = ['domain_name'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

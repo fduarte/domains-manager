@@ -15,9 +15,13 @@ Route::get('/', function () {
     return view('app');
 });
 
-Route::get('/', 'DomainController@index');
+Route::get('/', 'DomainController@index')->name('domain.index');
 Route::get('/domain/add', 'DomainController@add');
 Route::get('/domain/create', 'DomainController@create');
+Route::get('/domain/{id}/edit', 'DomainController@edit');
+Route::post('/domain/store', 'DomainController@store')->name('domain.store');
+Route::get('domain/{id}/destroy', 'DomainController@destroy')->name('domain.destroy');
+Route::get('domain/{url}/refresh', 'WhoisController@getData')->name('domain.refresh');
 
 /*
 Route::get('/debug-sentry', function () {
@@ -42,4 +46,4 @@ Route::get('/redirect', function (\Illuminate\Http\Request $request) {
 */
 
 // Domains resources (i.e data to populate datatables)
-Route::resource('domain', 'DomainController');
+//Route::resource('domain', 'DomainController');

@@ -49,9 +49,21 @@
         <div class="row mt-5">
             <div class="col-12">
 
-                @if (session('status'))
-                    <div class="alert">
-                        {{ session('status') }}
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                {{-- Display errors --}}
+                @if (count($errors) > 0)
+                    <div class="alert alert-danger">
+                        <h3>Please correct the following issues:</h3>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 

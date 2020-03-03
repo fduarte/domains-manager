@@ -51221,19 +51221,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ReactDataTableApp__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ReactDataTableApp */ "./resources/js/ReactDataTableApp.js");
 
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes React and other helpers. It's a great starting point while
- * building robust, powerful web applications using React + Laravel.
- */
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 /**
- * Next, we will create a fresh React component instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
+ * Render index page React DataTable
  */
-// require('./components/Example');
 
 
 
@@ -51290,6 +51282,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -51336,7 +51334,8 @@ function (_Component) {
       sorted_column: _this.props.columns[0].fieldName,
       offset: 4,
       order: 'asc'
-    };
+    }; // this.handleDomainRefresh = this.handleDomainRefresh.bind(this);
+
     return _this;
   }
 
@@ -51440,11 +51439,13 @@ function (_Component) {
         key: "actions"
       }, "Actions");
       cols.push(actions);
-      return cols; // console.log(cols);
+      return cols;
     }
   }, {
     key: "domainList",
     value: function domainList() {
+      var _this6 = this;
+
       if (this.state.entities.data.length) {
         var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "fa fa-edit"
@@ -51457,11 +51458,13 @@ function (_Component) {
         });
         return this.state.entities.data.map(function (domain) {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_name']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.company_name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.phone), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_expires_date']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/edit/' + domain['id']
+            href: '/domain/' + domain['id'] + '/edit'
           }, " ", iconEdit), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/delete/' + domain['id']
+            href: '/domain/' + domain['id'] + '/destroy'
           }, " ", iconDelete), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/refresh/' + domain['id']
+            onClick: function onClick() {
+              return _this6.handleDomainRefresh(domain['domain_name']);
+            }
           }, " ", iconRefresh)));
         });
       } else {
@@ -51471,21 +51474,53 @@ function (_Component) {
         }, "No Records Found."));
       }
     }
+    /**
+     * Handles fetching domain data from the WhoIs API using an internal gateway
+     * Updates the domain expiration date (both in the DB and in state)
+     *
+     * @see Api\WhoisController
+     * @param domainName
+     */
+
+  }, {
+    key: "handleDomainRefresh",
+    value: function handleDomainRefresh(domainName) {
+      var _this7 = this;
+
+      fetch('api/v1/whois?domainName=' + domainName).then(function (response) {
+        return response.json();
+      }).then(function (res) {
+        var domainData = _this7.state.entities.data.filter(function (data) {
+          // If a matching domainName is found in state, then update its expiration date
+          if (data.domain_name === domainName) {
+            return data.domain_expires_date = res.domain_expires_date;
+          }
+
+          return data;
+        });
+
+        _this7.setState({
+          entities: _objectSpread({}, _this7.state.entities, {
+            data: domainData
+          })
+        });
+      });
+    }
   }, {
     key: "sortByColumn",
     value: function sortByColumn(column) {
-      var _this6 = this;
+      var _this8 = this;
 
       if (column === this.state.sorted_column) {
         this.state.order === 'asc' ? this.setState({
           order: 'desc',
           current_page: this.state.first_page
         }, function () {
-          _this6.fetchEntities();
+          _this8.fetchEntities();
         }) : this.setState({
           order: 'asc'
         }, function () {
-          _this6.fetchEntities();
+          _this8.fetchEntities();
         });
       } else {
         this.setState({
@@ -51493,23 +51528,23 @@ function (_Component) {
           order: 'asc',
           current_page: this.state.first_page
         }, function () {
-          _this6.fetchEntities();
+          _this8.fetchEntities();
         });
       }
     }
   }, {
     key: "pageList",
     value: function pageList() {
-      var _this7 = this;
+      var _this9 = this;
 
       return this.pagesNumbers().map(function (page) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-          className: page === _this7.state.entities.meta.current_page ? 'page-item active' : 'page-item',
+          className: page === _this9.state.entities.meta.current_page ? 'page-item active' : 'page-item',
           key: page
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "page-link",
           onClick: function onClick() {
-            return _this7.changePage(page);
+            return _this9.changePage(page);
           }
         }, page));
       });
@@ -51517,7 +51552,7 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this8 = this;
+      var _this10 = this;
 
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "data-table"
@@ -51533,7 +51568,7 @@ function (_Component) {
         className: "page-link",
         disabled: 1 === this.state.entities.meta.current_page,
         onClick: function onClick() {
-          return _this8.changePage(_this8.state.entities.meta.current_page - 1);
+          return _this10.changePage(_this10.state.entities.meta.current_page - 1);
         }
       }, "Previous")), this.pageList(), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         className: "page-item"
@@ -51541,7 +51576,7 @@ function (_Component) {
         className: "page-link",
         disabled: this.state.entities.meta.last_page === this.state.entities.meta.current_page,
         onClick: function onClick() {
-          return _this8.changePage(_this8.state.entities.meta.current_page + 1);
+          return _this10.changePage(_this10.state.entities.meta.current_page + 1);
         }
       }, "Next")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: {

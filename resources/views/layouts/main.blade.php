@@ -55,6 +55,12 @@
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 {{-- Display errors --}}
                 @if (count($errors) > 0)
                     <div class="alert alert-danger">

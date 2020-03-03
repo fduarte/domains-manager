@@ -78,15 +78,31 @@ class DomainController extends Controller
             'client_id' => 'required',
         ]);
 
-        Domain::create($request->all());
+        $domain = Domain::firstOrCreate(
+            ['domain_name' => $request->domain_name],
+            $request->all()
+        );
 
-        $message = 'Domain created successfully.';
+        if ($domain->wasRecentlyCreated) {
+            $message = 'Domain created successfully.';
+
+            // Save message to session so it's displayed in view
+            $request->session()->flash('status', $message);
+
+            return Redirect::to('/')
+                ->with('success', $message);
+        }
+
+        $message = 'Domain already exists.';
 
         // Save message to session so it's displayed in view
-        $request->session()->flash('status', $message);
+        $request->session()->flash('error', $message);
 
-        return Redirect::to('/')
-            ->with('success', $message);
+        return Redirect::to('/domain/create')
+            ->with('error', $message);
+
+
+
     }
 
     /**

@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 class Domain extends Model
 {
 
-    protected $fillable = ['domain_name'];
+    protected $fillable = [
+        'domain_name',
+        'client_id'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

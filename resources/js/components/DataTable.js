@@ -23,10 +23,18 @@ export default class DataTable extends Component {
             offset: 4,
             order: 'asc',
         };
-
-        // this.handleDomainRefresh = this.handleDomainRefresh.bind(this);
     }
 
+    /**
+     * Set state's entities, which includes domain specific data
+     */
+    componentDidMount() {
+        this.setState({ current_page: this.state.entities.meta.current_page }, () => {this.fetchEntities()});
+    }
+
+    /**
+     * Get domain data
+     */
     fetchEntities() {
         let fetchUrl = `${this.props.url}/?page=${this.state.current_page}&column=${this.state.sorted_column}&order=${this.state.order}&per_page=${this.state.entities.meta.per_page}`;
 
@@ -39,38 +47,22 @@ export default class DataTable extends Component {
             });
     }
 
-    changePage(pageNumber) {
-        this.setState({ current_page: pageNumber }, () => {this.fetchEntities()});
-    }
-
+    /**
+     * Column headers
+     *
+     * @param value
+     * @returns {string}
+     */
     columnHead(value) {
         let header = value.split('_').join(' ');
         return header.split('.').join(' ').toUpperCase();
     }
 
-    pagesNumbers() {
-        if (!this.state.entities.meta.to) {
-            return [];
-        }
-        let from = this.state.entities.meta.current_page - this.state.offset;
-        if (from < 1) {
-            from = 1;
-        }
-        let to = from + (this.state.offset * 2);
-        if (to >= this.state.entities.meta.last_page) {
-            to = this.state.entities.meta.last_page;
-        }
-        let pagesArray = [];
-        for (let page = from; page <= to; page++) {
-            pagesArray.push(page);
-        }
-        return pagesArray;
-    }
-
-    componentDidMount() {
-        this.setState({ current_page: this.state.entities.meta.current_page }, () => {this.fetchEntities()});
-    }
-
+    /**
+     * Table headers
+     *
+     * @returns {*}
+     */
     tableHeads() {
         let icon;
         if (this.state.order === 'asc') {
@@ -93,6 +85,10 @@ export default class DataTable extends Component {
         return cols;
     }
 
+    /**
+     * Generates table rows and cells with domain data
+     * @returns {*[]|*}
+     */
     domainList() {
         if (this.state.entities.data.length) {
 
@@ -111,8 +107,7 @@ export default class DataTable extends Component {
                     <td>
                         <a href={'/domain/' + domain['id'] + '/edit'}> {iconEdit}</a>
                         <a href={'/domain/' + domain['id'] + '/destroy' }> {iconDelete}</a>
-                        {/*<a href={'/domain/refresh/' + domain['id']}> {iconRefresh}</a>*/}
-                        <a onClick={() => this.handleDomainRefresh(domain['domain_name'])} > {iconRefresh}</a>
+                        <a href="#" onClick={() => this.handleDomainRefresh(domain['domain_name'])} > {iconRefresh}</a>
                     </td>
                 </tr>
             })
@@ -152,6 +147,11 @@ export default class DataTable extends Component {
             })
     }
 
+    /**
+     * Sorting by column header
+     *
+     * @param column
+     */
     sortByColumn(column) {
         if (column === this.state.sorted_column) {
             this.state.order === 'asc' ? this.setState({ order: 'desc', current_page: this.state.first_page }, () => {this.fetchEntities()}) : this.setState({ order: 'asc' }, () => {this.fetchEntities()});
@@ -160,6 +160,44 @@ export default class DataTable extends Component {
         }
     }
 
+    /**
+     * Pagination
+     *
+     * @param pageNumber
+     */
+    changePage(pageNumber) {
+        this.setState({ current_page: pageNumber }, () => {this.fetchEntities()});
+    }
+
+    /**
+     * Pagination
+     *
+     * @returns {[]|*[]}
+     */
+    pagesNumbers() {
+        if (!this.state.entities.meta.to) {
+            return [];
+        }
+        let from = this.state.entities.meta.current_page - this.state.offset;
+        if (from < 1) {
+            from = 1;
+        }
+        let to = from + (this.state.offset * 2);
+        if (to >= this.state.entities.meta.last_page) {
+            to = this.state.entities.meta.last_page;
+        }
+        let pagesArray = [];
+        for (let page = from; page <= to; page++) {
+            pagesArray.push(page);
+        }
+        return pagesArray;
+    }
+
+    /**
+     * Pagination
+     *
+     * @returns {*[]}
+     */
     pageList() {
         return this.pagesNumbers().map(page => {
             return <li className={ page === this.state.entities.meta.current_page ? 'page-item active' : 'page-item' } key={page}>
@@ -168,6 +206,11 @@ export default class DataTable extends Component {
         })
     }
 
+    /**
+     * Render DataTable
+     *
+     * @returns {*}
+     */
     render() {
         return (
             <div className="data-table">

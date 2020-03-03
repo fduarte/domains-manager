@@ -60,10 +60,17 @@ class WhoisController extends Controller
             return $message;
         }
 
+        $adminContactName = $res->WhoisRecord->registryData->administrativeContact->name ?? $res->WhoisRecord->administrativeContact->name;
+        $adminContactEmail = $res->WhoisRecord->contactEmail ?? '';
+        $domainStatus = $res->WhoisRecord->status ?? NULL;
+
         $domain = Domain::where('domain_name', $domainName)
                         ->update([
                             'domain_expires_date' => $expiresDate,
-                            'domain_created_date' => $createdDate
+                            'domain_created_date' => $createdDate,
+                            'domain_status' => $domainStatus,
+                            'admin_contact_name' => $adminContactName,
+                            'admin_contact_email' => $adminContactEmail
                         ]);
 
         Log::info('WHOIS call successful and domain updated: ' . $domainName);

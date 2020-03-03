@@ -5,6 +5,10 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+.data-table a:hover {
+  text-decoration: none;
+}
+
 .table-head {
   font-weight: normal;
 }

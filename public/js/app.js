@@ -51334,42 +51334,221 @@ function (_Component) {
       sorted_column: _this.props.columns[0].fieldName,
       offset: 4,
       order: 'asc'
-    }; // this.handleDomainRefresh = this.handleDomainRefresh.bind(this);
-
+    };
     return _this;
   }
+  /**
+   * Set state's entities, which includes domain specific data
+   */
+
 
   _createClass(DataTable, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.setState({
+        current_page: this.state.entities.meta.current_page
+      }, function () {
+        _this2.fetchEntities();
+      });
+    }
+    /**
+     * Get domain data
+     */
+
+  }, {
     key: "fetchEntities",
     value: function fetchEntities() {
-      var _this2 = this;
+      var _this3 = this;
 
       var fetchUrl = "".concat(this.props.url, "/?page=").concat(this.state.current_page, "&column=").concat(this.state.sorted_column, "&order=").concat(this.state.order, "&per_page=").concat(this.state.entities.meta.per_page);
       axios.get(fetchUrl).then(function (response) {
-        _this2.setState({
+        _this3.setState({
           entities: response.data
         });
       })["catch"](function (e) {
         console.error(e);
       });
     }
-  }, {
-    key: "changePage",
-    value: function changePage(pageNumber) {
-      var _this3 = this;
+    /**
+     * Column headers
+     *
+     * @param value
+     * @returns {string}
+     */
 
-      this.setState({
-        current_page: pageNumber
-      }, function () {
-        _this3.fetchEntities();
-      });
-    }
   }, {
     key: "columnHead",
     value: function columnHead(value) {
       var header = value.split('_').join(' ');
       return header.split('.').join(' ').toUpperCase();
     }
+    /**
+     * Table headers
+     *
+     * @returns {*}
+     */
+
+  }, {
+    key: "tableHeads",
+    value: function tableHeads() {
+      var _this4 = this;
+
+      var icon;
+
+      if (this.state.order === 'asc') {
+        icon = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-arrow-circle-up ml-1"
+        });
+      } else {
+        icon = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-arrow-circle-down ml-1"
+        });
+      }
+
+      var cols = this.props.columns.map(function (obj) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+          className: "table-head",
+          key: obj.fieldName,
+          onClick: function onClick() {
+            return _this4.sortByColumn(obj.fieldName);
+          }
+        }, _this4.columnHead(obj.headerName), obj.fieldName === _this4.state.sorted_column && icon);
+      });
+      var actions = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        className: "table-head",
+        key: "actions"
+      }, "Actions");
+      cols.push(actions);
+      return cols;
+    }
+    /**
+     * Generates table rows and cells with domain data
+     * @returns {*[]|*}
+     */
+
+  }, {
+    key: "domainList",
+    value: function domainList() {
+      var _this5 = this;
+
+      if (this.state.entities.data.length) {
+        var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-edit"
+        });
+        var iconDelete = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-trash"
+        });
+        var iconRefresh = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-retweet"
+        });
+        return this.state.entities.data.map(function (domain) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_name']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.company_name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.phone), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_expires_date']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            href: '/domain/' + domain['id'] + '/edit'
+          }, " ", iconEdit), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            href: '/domain/' + domain['id'] + '/destroy'
+          }, " ", iconDelete), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+            href: "#",
+            onClick: function onClick() {
+              return _this5.handleDomainRefresh(domain['domain_name']);
+            }
+          }, " ", iconRefresh)));
+        });
+      } else {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          colSpan: this.props.columns.length,
+          className: "text-center"
+        }, "No Records Found."));
+      }
+    }
+    /**
+     * Handles fetching domain data from the WhoIs API using an internal gateway
+     * Updates the domain expiration date (both in the DB and in state)
+     *
+     * @see Api\WhoisController
+     * @param domainName
+     */
+
+  }, {
+    key: "handleDomainRefresh",
+    value: function handleDomainRefresh(domainName) {
+      var _this6 = this;
+
+      fetch('api/v1/whois?domainName=' + domainName).then(function (response) {
+        return response.json();
+      }).then(function (res) {
+        var domainData = _this6.state.entities.data.filter(function (data) {
+          // If a matching domainName is found in state, then update its expiration date
+          if (data.domain_name === domainName) {
+            return data.domain_expires_date = res.domain_expires_date;
+          }
+
+          return data;
+        });
+
+        _this6.setState({
+          entities: _objectSpread({}, _this6.state.entities, {
+            data: domainData
+          })
+        });
+      });
+    }
+    /**
+     * Sorting by column header
+     *
+     * @param column
+     */
+
+  }, {
+    key: "sortByColumn",
+    value: function sortByColumn(column) {
+      var _this7 = this;
+
+      if (column === this.state.sorted_column) {
+        this.state.order === 'asc' ? this.setState({
+          order: 'desc',
+          current_page: this.state.first_page
+        }, function () {
+          _this7.fetchEntities();
+        }) : this.setState({
+          order: 'asc'
+        }, function () {
+          _this7.fetchEntities();
+        });
+      } else {
+        this.setState({
+          sorted_column: column,
+          order: 'asc',
+          current_page: this.state.first_page
+        }, function () {
+          _this7.fetchEntities();
+        });
+      }
+    }
+    /**
+     * Pagination
+     *
+     * @param pageNumber
+     */
+
+  }, {
+    key: "changePage",
+    value: function changePage(pageNumber) {
+      var _this8 = this;
+
+      this.setState({
+        current_page: pageNumber
+      }, function () {
+        _this8.fetchEntities();
+      });
+    }
+    /**
+     * Pagination
+     *
+     * @returns {[]|*[]}
+     */
+
   }, {
     key: "pagesNumbers",
     value: function pagesNumbers() {
@@ -51397,141 +51576,12 @@ function (_Component) {
 
       return pagesArray;
     }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this4 = this;
-
-      this.setState({
-        current_page: this.state.entities.meta.current_page
-      }, function () {
-        _this4.fetchEntities();
-      });
-    }
-  }, {
-    key: "tableHeads",
-    value: function tableHeads() {
-      var _this5 = this;
-
-      var icon;
-
-      if (this.state.order === 'asc') {
-        icon = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-arrow-circle-up ml-1"
-        });
-      } else {
-        icon = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-arrow-circle-down ml-1"
-        });
-      }
-
-      var cols = this.props.columns.map(function (obj) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
-          className: "table-head",
-          key: obj.fieldName,
-          onClick: function onClick() {
-            return _this5.sortByColumn(obj.fieldName);
-          }
-        }, _this5.columnHead(obj.headerName), obj.fieldName === _this5.state.sorted_column && icon);
-      });
-      var actions = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
-        className: "table-head",
-        key: "actions"
-      }, "Actions");
-      cols.push(actions);
-      return cols;
-    }
-  }, {
-    key: "domainList",
-    value: function domainList() {
-      var _this6 = this;
-
-      if (this.state.entities.data.length) {
-        var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-edit"
-        });
-        var iconDelete = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-trash"
-        });
-        var iconRefresh = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-retweet"
-        });
-        return this.state.entities.data.map(function (domain) {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_name']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.company_name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.phone), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_expires_date']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/' + domain['id'] + '/edit'
-          }, " ", iconEdit), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/' + domain['id'] + '/destroy'
-          }, " ", iconDelete), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            onClick: function onClick() {
-              return _this6.handleDomainRefresh(domain['domain_name']);
-            }
-          }, " ", iconRefresh)));
-        });
-      } else {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
-          colSpan: this.props.columns.length,
-          className: "text-center"
-        }, "No Records Found."));
-      }
-    }
     /**
-     * Handles fetching domain data from the WhoIs API using an internal gateway
-     * Updates the domain expiration date (both in the DB and in state)
+     * Pagination
      *
-     * @see Api\WhoisController
-     * @param domainName
+     * @returns {*[]}
      */
 
-  }, {
-    key: "handleDomainRefresh",
-    value: function handleDomainRefresh(domainName) {
-      var _this7 = this;
-
-      fetch('api/v1/whois?domainName=' + domainName).then(function (response) {
-        return response.json();
-      }).then(function (res) {
-        var domainData = _this7.state.entities.data.filter(function (data) {
-          // If a matching domainName is found in state, then update its expiration date
-          if (data.domain_name === domainName) {
-            return data.domain_expires_date = res.domain_expires_date;
-          }
-
-          return data;
-        });
-
-        _this7.setState({
-          entities: _objectSpread({}, _this7.state.entities, {
-            data: domainData
-          })
-        });
-      });
-    }
-  }, {
-    key: "sortByColumn",
-    value: function sortByColumn(column) {
-      var _this8 = this;
-
-      if (column === this.state.sorted_column) {
-        this.state.order === 'asc' ? this.setState({
-          order: 'desc',
-          current_page: this.state.first_page
-        }, function () {
-          _this8.fetchEntities();
-        }) : this.setState({
-          order: 'asc'
-        }, function () {
-          _this8.fetchEntities();
-        });
-      } else {
-        this.setState({
-          sorted_column: column,
-          order: 'asc',
-          current_page: this.state.first_page
-        }, function () {
-          _this8.fetchEntities();
-        });
-      }
-    }
   }, {
     key: "pageList",
     value: function pageList() {
@@ -51549,6 +51599,12 @@ function (_Component) {
         }, page));
       });
     }
+    /**
+     * Render DataTable
+     *
+     * @returns {*}
+     */
+
   }, {
     key: "render",
     value: function render() {

@@ -6,7 +6,6 @@ use App\Client;
 use App\Domain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Yajra\DataTables\DataTables;
 
 class DomainController extends Controller
 {
@@ -20,26 +19,6 @@ class DomainController extends Controller
      */
     public function index(Request $request)
     {
-
-//        if ($request->ajax()) {
-//
-//            $data = Domain::all();
-//
-//            return DataTables::of($data)
-//                ->addColumn('client', function($data) {
-//                   return $data->client->name;
-//                })
-//                ->addColumn('action', function($data) {
-//                    $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm">Edit</button>';
-//
-//                    $button .= '&nbsp; <button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm" >Delete</button>';
-//
-//                    return $button;
-//                })
-//                ->rawColumns(['client', 'action'])
-//                ->make(true);
-//        }
-
         return view('domain.index');
     }
 
@@ -53,15 +32,7 @@ class DomainController extends Controller
     {
         $clients = Client::all()->sortBy('name')->pluck('name', 'id');
 
-
         return view('domain.create', ['clients' => $clients]);
-
-//        $domain = new Domain();
-//        $domain->name = request('name');
-//
-//        $domain->save();
-//
-//        return redirect('/');
     }
 
     /**
@@ -74,7 +45,7 @@ class DomainController extends Controller
     {
         // Validate request
         $request->validate([
-            'domain_name' => 'required|max:255',
+            'domain_name' => 'required|unique:domains|max:255',
             'client_id' => 'required',
         ]);
 
@@ -83,25 +54,13 @@ class DomainController extends Controller
             $request->all()
         );
 
-        if ($domain->wasRecentlyCreated) {
-            $message = 'Domain created successfully.';
-
-            // Save message to session so it's displayed in view
-            $request->session()->flash('status', $message);
-
-            return Redirect::to('/')
-                ->with('success', $message);
-        }
-
-        $message = 'Domain already exists.';
+        $message = 'Domain created successfully.';
 
         // Save message to session so it's displayed in view
-        $request->session()->flash('error', $message);
+        $request->session()->flash('status', $message);
 
-        return Redirect::to('/domain/create')
-            ->with('error', $message);
-
-
+        return Redirect::to('/')
+            ->with('success', $message);
 
     }
 
@@ -113,12 +72,23 @@ class DomainController extends Controller
      */
     public function edit($id)
     {
-        $data['domain_id'] = Domain::where(['id' => $id])->first();
-        return view('domain.edit', $data);
+        $domain = Domain::where(['id' => $id])->first();
+        $clients = Client::all()->sortBy('name')->pluck('name', 'id');
+
+        return view('domain.edit', compact('domain', 'clients'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update domain thru edit form
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request)
     {
+//        $domain = Domain::findFirst($request->id);
+
         $request->validate([
             'domain_name' => 'required|max:255',
             'client_id' => 'required',
@@ -129,10 +99,10 @@ class DomainController extends Controller
             'client_id' => $request->client_id
         ];
 
-        Domain::where('id', $id)->update($update);
+        Domain::where('id', $request->id)->update($update);
 
-        return Redirect::to('domains')
-            ->with('success', 'Domain updated successfully.');
+        return Redirect::to('/')
+            ->with('success', 'Domain updated successfully: ' . $request->domain_name);
     }
 
     public function destroy($id)

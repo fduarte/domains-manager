@@ -60,9 +60,9 @@ class WhoisController extends Controller
             return $message;
         }
 
-        $adminContactName = $res->WhoisRecord->registryData->administrativeContact->name ?? $res->WhoisRecord->administrativeContact->name;
-        $adminContactEmail = $res->WhoisRecord->contactEmail ?? '';
-        $domainStatus = $res->WhoisRecord->registryData->status ?? $res->WhoisRecord->status;
+        $adminContactName = $res->WhoisRecord->registryData->administrativeContact->name ?? $res->WhoisRecord->administrativeContact->name ?? NULL;
+        $adminContactEmail = $res->WhoisRecord->contactEmail ?? NULL;
+        $domainStatus = $res->WhoisRecord->registryData->status ?? $res->WhoisRecord->status ?? NULL;
 
         $updateData = [
             'domain_expires_date' => $expiresDate,

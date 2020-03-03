@@ -1,22 +1,24 @@
 @extends('layouts.main')
 
-@section('title', 'Create Domain')
+@section('title', 'Edit Domain')
 
 @section('content')
 
     <div class="flex-center position-ref full-height col-8" >
 
-        <h2>Add a Domain</h2>
+        <h2>Edit Domain</h2>
         <hr />
 
-        <form action="{{ route('domain.store') }}" method="POST">
+        <form action="{{ route('domain.update', $domain->id) }}" method="POST">
             @csrf
+
+            <input name="id" type="hidden" value="{{ $domain->id }}" />
 
             <div class="form-group">
                 <label for="domain-name">Domain Name</label>
-                <input id="domain-name" name="domain_name" type="text" class="form-control @error('domain_name') is-invalid @enderror">
+                <input id="domain-name" name="domain_name" value="{{ $domain->domain_name }}" type="text" readonly class="form-control @error('domain_name') is-invalid @enderror">
                 @error('domain_name')
-                    <span class="text-danger">{{ $errors->first('domain_name') }}</span>
+                <span class="text-danger">{{ $errors->first('domain_name') }}</span>
                 @enderror
             </div>
 

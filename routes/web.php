@@ -21,7 +21,7 @@ Route::get('/domain/create', 'DomainController@create');
 Route::get('/domain/{id}/edit', 'DomainController@edit');
 Route::post('/domain/store', 'DomainController@store')->name('domain.store');
 Route::post('/domain/update', 'DomainController@update')->name('domain.update');
-Route::get('/domain/{id}/delete', 'DomainController@destroy')->name('domain.destroy');
+Route::get('/domain/{id}/destroy', 'DomainController@destroy')->name('domain.destroy');
 
 // This route hits an internal API gateway to the WHOIS API, which in turn returns domain related data
 Route::get('domain/{url}/refresh', 'WhoisController@getData')->name('domain.refresh');

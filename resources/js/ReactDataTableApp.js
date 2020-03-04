@@ -23,7 +23,7 @@ export default class ReactDataTableApp extends Component {
 
         const actions = [
             {action: 'edit', baseUrl: 'domain', icon: iconEdit},
-            {action: 'delete', baseUrl: 'domain', icon: iconDelete},
+            {action: 'destroy', baseUrl: 'domain', icon: iconDelete},
             {id:'domainRefresh', action: '', baseUrl: '#', icon: iconRefresh}
         ];
 

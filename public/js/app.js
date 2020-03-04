@@ -51205,7 +51205,7 @@ function (_Component) {
         baseUrl: 'domain',
         icon: iconEdit
       }, {
-        action: 'delete',
+        action: 'destroy',
         baseUrl: 'domain',
         icon: iconDelete
       }, {

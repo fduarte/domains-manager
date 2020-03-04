@@ -20,14 +20,31 @@ Route::get('/domain/add', 'DomainController@add');
 Route::get('/domain/create', 'DomainController@create');
 Route::get('/domain/{id}/edit', 'DomainController@edit');
 Route::post('/domain/store', 'DomainController@store')->name('domain.store');
-Route::get('domain/{id}/destroy', 'DomainController@destroy')->name('domain.destroy');
+Route::post('/domain/update', 'DomainController@update')->name('domain.update');
+Route::get('/domain/{id}/delete', 'DomainController@destroy')->name('domain.destroy');
+
+// This route hits an internal API gateway to the WHOIS API, which in turn returns domain related data
 Route::get('domain/{url}/refresh', 'WhoisController@getData')->name('domain.refresh');
 
+Route::resource('clients', 'ClientController');
+
 /*
-Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
+Route::get('/clients', 'ClientController@index')->name('client.index');
+Route::get('/client/add', 'ClientController@add');
+Route::get('/client/create', 'ClientController@create');
+Route::get('/client/{id}/edit', 'ClientController@edit');
+Route::post('/client/store', 'ClientController@store')->name('client.store');
+Route::post('/client/update', 'ClientController@update')->name('client.store');
+Route::get('/client/{id}/destroy', 'ClientController@destroy')->name('client.destroy');
 */
+
+
+///**
+// * This is a sentry test route
+// */
+//Route::get('/debug-sentry', function () {
+//    throw new Exception('My first Sentry error!');
+//});
 
 /*
 Route::get('/redirect', function (\Illuminate\Http\Request $request) {

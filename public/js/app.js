@@ -51191,9 +51191,33 @@ function (_Component) {
         fieldName: 'domain_expires_date',
         headerName: 'Expiration'
       }];
+      var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-edit"
+      });
+      var iconDelete = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-trash"
+      });
+      var iconRefresh = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-retweet"
+      });
+      var actions = [{
+        action: 'edit',
+        baseUrl: 'domain',
+        icon: iconEdit
+      }, {
+        action: 'delete',
+        baseUrl: 'domain',
+        icon: iconDelete
+      }, {
+        id: 'domainRefresh',
+        action: '',
+        baseUrl: '#',
+        icon: iconRefresh
+      }];
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_DataTable__WEBPACK_IMPORTED_MODULE_1__["default"], {
         url: "/api/v1/domains",
-        columns: columns
+        columns: columns,
+        actions: actions
       });
     }
   }]);
@@ -51424,42 +51448,63 @@ function (_Component) {
       return cols;
     }
     /**
-     * Generates table rows and cells with domain data
-     * @returns {*[]|*}
+     * Generate table cells using the columns fieldNames to get corresponding state data
+     *
+     * @todo - This was an attempt to make this component abstract enought to generate table content
+     * based on the columns and actions arrays passed in as props. It accomplishes it well, with the exception of the domain refresh
+     * functionality (which is still hardcoded in handleDomainRefresh())
+     * @returns {[]}
      */
 
   }, {
-    key: "domainList",
-    value: function domainList() {
+    key: "dataList",
+    value: function dataList() {
       var _this5 = this;
 
       if (this.state.entities.data.length) {
-        var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-edit"
-        });
-        var iconDelete = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-trash"
-        });
-        var iconRefresh = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-retweet"
-        });
-        return this.state.entities.data.map(function (domain) {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_name']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.company_name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain.client.phone), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, domain['domain_expires_date']), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/' + domain['id'] + '/edit'
-          }, " ", iconEdit), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: '/domain/' + domain['id'] + '/destroy'
-          }, " ", iconDelete), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-            href: "#",
-            onClick: function onClick() {
-              return _this5.handleDomainRefresh(domain['domain_name']);
+        var rows = []; // Loop over data object from state (i.e. domains)
+
+        this.state.entities.data.map(function (data) {
+          var cells = []; // Use field names in columns config array to get data from state
+
+          _this5.props.columns.forEach(function (val, key, arr) {
+            // Use lodash get function to get correct value from state's data object
+            var cell = _.get(data, val.fieldName); // Store table cell value
+
+
+            cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, " ", cell, " ")); // If we are at the end of the row, then display the actions buttons
+
+            if (key === arr.length - 1) {
+              var actions = _this5.props.actions;
+              var links = []; // Generate action links
+
+              actions.forEach(function (act) {
+                /**
+                 * Generate action links
+                 * Special scenario for the domain refresh functionality
+                 */
+                if (act.id === 'domainRefresh') {
+                  links.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+                    className: "mr-2",
+                    href: "#",
+                    onClick: function onClick() {
+                      return _this5.handleDomainRefresh(data['domain_name']);
+                    }
+                  }, act.icon));
+                } else {
+                  links.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+                    className: "mr-2",
+                    href: act.baseUrl + '/' + data['id'] + '/' + act.action
+                  }, act.icon));
+                }
+              });
+              cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, links));
             }
-          }, " ", iconRefresh)));
+          });
+
+          rows.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, cells));
         });
-      } else {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
-          colSpan: this.props.columns.length,
-          className: "text-center"
-        }, "No Records Found."));
+        return rows;
       }
     }
     /**
@@ -51616,7 +51661,7 @@ function (_Component) {
         className: "table table-sm table-responsive-sm table-stripped table-hover"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", {
         className: "thead-dark"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, this.tableHeads())), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.domainList())), this.state.entities.data && this.state.entities.data.length > 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, this.tableHeads())), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.dataList())), this.state.entities.data && this.state.entities.data.length > 0 && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "pagination"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
         className: "page-item"

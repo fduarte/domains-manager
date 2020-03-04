@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Client;
 use App\Domain;
+use App\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 
 class DomainController extends Controller
@@ -31,8 +33,9 @@ class DomainController extends Controller
     public function create()
     {
         $clients = Client::all()->sortBy('name')->pluck('name', 'id');
+        $services = Service::all()->sortBy('name')->pluck('name', 'id');
 
-        return view('domain.create', ['clients' => $clients]);
+        return view('domain.create', compact('clients', 'services'));
     }
 
     /**
@@ -87,7 +90,6 @@ class DomainController extends Controller
      */
     public function update(Request $request)
     {
-//        $domain = Domain::findFirst($request->id);
 
         $request->validate([
             'domain_name' => 'required|max:255',
@@ -105,17 +107,21 @@ class DomainController extends Controller
             ->with('success', 'Domain updated successfully: ' . $request->domain_name);
     }
 
+    /**
+     * Delete domain
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $domain = Domain::findOrFail($id);
+        $domainName = $domain->domain_name;
         $domain->delete();
 
         return Redirect::to('/')
-            ->with('success', 'Domain deleted.');
+            ->with('success', 'Domain deleted: ' . $domainName);
     }
-
-
-
 
 
 }

@@ -28,7 +28,7 @@ export default class ReactDataTableApp extends Component {
         ];
 
         return (
-            <DataTable url="/api/v1/domains" columns={columns} actions={actions} /*custom={this.handleDomainRefresh}*/ />
+            <DataTable url="/api/v1/domains" columns={columns} actions={actions} />
         );
     }
 }

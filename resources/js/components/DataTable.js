@@ -85,36 +85,61 @@ export default class DataTable extends Component {
         return cols;
     }
 
+
     /**
-     * Generates table rows and cells with domain data
-     * @returns {*[]|*}
+     * Generate table cells using the columns fieldNames to get corresponding state data
+     *
+     * @todo - This was an attempt to make this component abstract enought to generate table content
+     * based on the columns and actions arrays passed in as props. It accomplishes it well, with the exception of the domain refresh
+     * functionality (which is still hardcoded in handleDomainRefresh())
+     * @returns {[]}
      */
-    domainList() {
+    dataList() {
         if (this.state.entities.data.length) {
 
-            let iconEdit = <i className="fa fa-edit"></i>;
-            let iconDelete = <i className="fa fa-trash"></i>;
-            let iconRefresh = <i className="fa fa-retweet"></i>;
+            const rows = [];
 
-            return this.state.entities.data.map(domain => {
-                return <tr>
-                    <td>{domain['domain_name']}</td>
-                    <td>{domain.client.company_name}</td>
-                    <td>{domain.client.name}</td>
-                    <td>{domain.client.email}</td>
-                    <td>{domain.client.phone}</td>
-                    <td>{domain['domain_expires_date']}</td>
-                    <td>
-                        <a href={'/domain/' + domain['id'] + '/edit'}> {iconEdit}</a>
-                        <a href={'/domain/' + domain['id'] + '/destroy' }> {iconDelete}</a>
-                        <a href="#" onClick={() => this.handleDomainRefresh(domain['domain_name'])} > {iconRefresh}</a>
-                    </td>
-                </tr>
-            })
-        } else {
-            return <tr>
-                <td colSpan={this.props.columns.length} className="text-center">No Records Found.</td>
-            </tr>
+            // Loop over data object from state (i.e. domains)
+            this.state.entities.data.map(data => {
+                const cells = [];
+
+                // Use field names in columns config array to get data from state
+                this.props.columns.forEach((val, key, arr) => {
+
+                    // Use lodash get function to get correct value from state's data object
+                    const cell = _.get(data, val.fieldName);
+
+                    // Store table cell value
+                    cells.push(<td> {cell} </td>);
+
+                    // If we are at the end of the row, then display the actions buttons
+                    if (key === arr.length - 1) {
+                        const actions = this.props.actions;
+                        const links = [];
+
+                        // Generate action links
+                        actions.forEach(act => {
+
+                            /**
+                             * Generate action links
+                             * Special scenario for the domain refresh functionality
+                             */
+                            if (act.id === 'domainRefresh') {
+                                links.push(<a className="mr-2" href="#" onClick={() => this.handleDomainRefresh(data['domain_name'])}>{act.icon}</a>);
+                            } else {
+                                links.push(<a className="mr-2" href={act.baseUrl + '/' + data['id'] + '/' + act.action}>{act.icon}</a>);
+                            }
+
+                        });
+                        cells.push(<td>{links}</td>);
+                    }
+                });
+
+                rows.push(<tr>{cells}</tr>);
+            });
+
+            return rows;
+
         }
     }
 
@@ -218,7 +243,7 @@ export default class DataTable extends Component {
                     <thead className="thead-dark">
                     <tr>{ this.tableHeads() }</tr>
                     </thead>
-                    <tbody>{ this.domainList() }</tbody>
+                    <tbody>{ this.dataList() }</tbody>
                 </table>
                 { (this.state.entities.data && this.state.entities.data.length > 0) &&
                 <nav>

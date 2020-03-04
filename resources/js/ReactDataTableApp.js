@@ -17,8 +17,18 @@ export default class ReactDataTableApp extends Component {
             {fieldName: 'domain_expires_date', headerName: 'Expiration'}
         ];
 
+        let iconEdit = <i className="fa fa-edit"></i>;
+        let iconDelete = <i className="fa fa-trash"></i>;
+        let iconRefresh = <i className="fa fa-retweet"></i>;
+
+        const actions = [
+            {action: 'edit', baseUrl: 'domain', icon: iconEdit},
+            {action: 'delete', baseUrl: 'domain', icon: iconDelete},
+            {id:'domainRefresh', action: '', baseUrl: '#', icon: iconRefresh}
+        ];
+
         return (
-            <DataTable url="/api/v1/domains" columns={columns} />
+            <DataTable url="/api/v1/domains" columns={columns} actions={actions} /*custom={this.handleDomainRefresh}*/ />
         );
     }
 }

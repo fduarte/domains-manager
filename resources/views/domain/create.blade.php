@@ -29,6 +29,16 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <p class="mb-0">Services</p>
+                    @foreach ($services as $id => $name)
+                    <div class="form-check">
+                        <input id="{{$id}}" class="form-check-input" type="checkbox" name="services[]" value="{{ $id }}" aria-label="{{ $name }}">
+                        <label class="form-check-label" for="{{$id}}">{{ $name }}</label>
+                    </div>
+                    @endforeach
+            </div>
+
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-secondary" href="{{ route('domain.index') }}">Cancel</a>
 

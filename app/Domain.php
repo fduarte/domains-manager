@@ -16,6 +16,11 @@ class Domain extends Model
         'client_id'
     ];
 
+    protected $casts = [
+        'domain_expires_date' => 'datetime:Y-m-d',
+        'domain_created_date' => 'datetime:Y-m-d',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

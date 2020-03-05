@@ -27,6 +27,7 @@
                 <div class="navbar-nav ml-auto">
                     <a class="nav-item nav-link" href="/">Domains</a>
                     <a class="nav-item nav-link" href="/clients">Clients</a>
+                    <a class="nav-item nav-link" href="/services">Services</a>
                     @if (Route::has('login'))
                         <div class="top-right links">
                             @auth
@@ -47,7 +48,7 @@
         <div id="loader"></div>
 
         <div class="row mt-5">
-            <div class="col-12">
+            <div class="col-12 mb-5">
 
                 @if (session('success'))
                     <div class="alert alert-success">

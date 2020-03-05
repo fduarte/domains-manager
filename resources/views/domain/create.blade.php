@@ -14,7 +14,7 @@
 
             <div class="form-group">
                 <label for="domain-name">Domain Name</label>
-                <input id="domain-name" name="domain_name" type="text" class="form-control @error('domain_name') is-invalid @enderror">
+                <input id="domain-name" name="domain_name" type="text" value="{{ old('domain_name') }}" class="form-control @error('domain_name') is-invalid @enderror">
                 @error('domain_name')
                     <span class="text-danger">{{ $errors->first('domain_name') }}</span>
                 @enderror
@@ -27,16 +27,6 @@
                         <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
-            </div>
-
-            <div class="form-group">
-                <p class="mb-0">Services</p>
-                    @foreach ($services as $id => $name)
-                    <div class="form-check">
-                        <input id="{{$id}}" class="form-check-input" type="checkbox" name="services[]" value="{{ $id }}" aria-label="{{ $name }}">
-                        <label class="form-check-label" for="{{$id}}">{{ $name }}</label>
-                    </div>
-                    @endforeach
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>

@@ -6,8 +6,14 @@ require('./bootstrap');
 /**
  * Render index page React DataTable
  */
-import ReactDataTableApp from './ReactDataTableApp';
+import DomainsDataTable from './DomainsDataTable';
+import ClientsDataTable from './ClientsDataTable';
 
-if (document.getElementById('datatable')) {
-    ReactDOM.render(<ReactDataTableApp />, document.getElementById('datatable'));
+if (document.getElementById('domains-datatable')) {
+    ReactDOM.render(<DomainsDataTable />, document.getElementById('domains-datatable'));
 }
+
+if (document.getElementById('clients-datatable')) {
+    ReactDOM.render(<ClientsDataTable />, document.getElementById('clients-datatable'));
+}
+

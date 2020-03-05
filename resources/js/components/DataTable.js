@@ -238,7 +238,7 @@ export default class DataTable extends Component {
      */
     render() {
         return (
-            <div className="data-table">
+            <div className={this.props.tableClassName}>
                 <table className="table table-sm table-responsive-sm table-stripped table-hover">
                     <thead className="thead-dark">
                     <tr>{ this.tableHeads() }</tr>

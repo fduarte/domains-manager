@@ -1,28 +1,30 @@
 @extends('layouts.main')
 
-@section('title', 'Create Client')
+@section('title', 'Edit Client')
 
 @section('content')
 
     <div class="flex-center position-ref full-height col-8" >
 
-        <h2>Add a Client</h2>
+        <h2>Edit Client</h2>
         <hr />
 
-        <form action="{{ route('client.store') }}" method="POST">
+        <form action="{{ route('client.update', $client->id) }}" method="POST">
             @csrf
+
+            <input name="id" type="hidden" value="{{ $client->id }}" />
 
             <div class="form-group">
                 <label for="client-name">Client Name</label>
-                <input id="client-name" name="name" type="text" value="{{ old('name') }}" class="form-control" @error('name') is-invalid @enderror">
-                @error('name')
-                <span class="text-danger">{{ $errors->first('name') }}</span>
+                <input id="client_name" name="name" value="{{ old('client_name', $client->name) }}" type="text" class="form-control @error('client_name') is-invalid @enderror">
+                @error('client_name')
+                <span class="text-danger">{{ $errors->first('client_name') }}</span>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="company-name">Company Name</label>
-                <input id="company-name" name="company_name" type="text" value="{{ old('company_name') }}" class="form-control @error('company_name') is-invalid @enderror">
+                <label for="company_name">Company</label>
+                <input id="company_name" name="company_name" value="{{ $client->company_name }}" type="text" class="form-control @error('company_name') is-invalid @enderror">
                 @error('company_name')
                 <span class="text-danger">{{ $errors->first('company_name') }}</span>
                 @enderror
@@ -30,15 +32,15 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input id="email" name="email" type="text" value="{{ old('email') }}" class="form-control @error('email') is-invalid @enderror">
+                <input id="email" name="email" value="{{ $client->email }}" type="text" class="form-control @error('email') is-invalid @enderror">
                 @error('email')
                 <span class="text-danger">{{ $errors->first('email') }}</span>
                 @enderror
             </div>
 
             <div class="form-group">
-                <label for="phone">Phone</label>
-                <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="form-control @error('phone') is-invalid @enderror">
+                <label for="phone">Phone Number</label>
+                <input id="phone" name="phone" value="{{ $client->phone }}" type="text" class="form-control @error('phone') is-invalid @enderror">
                 @error('phone')
                 <span class="text-danger">{{ $errors->first('phone') }}</span>
                 @enderror
@@ -55,7 +57,7 @@
                             name="services[]"
                             value="{{ $id }}"
                             aria-label="{{ $name }}"
-                            {{ is_array(old('services')) && in_array($id, old('services')) ? "checked" : "" }}
+                            {{ in_array($id, $clientServices) ? "checked" : "" }}
                         >
                         <label class="form-check-label" for="{{$id}}">{{ $name }}</label>
                     </div>
@@ -64,6 +66,7 @@
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-secondary" href="{{ route('client.index') }}">Cancel</a>
+            <a class="btn alert-danger pull-right" href="{{ route('client.destroy', $client->id) }}">Delete</a>
 
         </form>
     </div>

@@ -26,7 +26,7 @@
                 <label for="client-id">Assign a Client</label>
                 <select class="form-control" name="client_id">
                     @foreach ($clients as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
+                        <option value="{{ $id }}" {{ $domain->client_id == $id ? "selected" : "" }}>{{ $name }}</option>
                     @endforeach
                 </select>
             </div>

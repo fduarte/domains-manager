@@ -33,7 +33,6 @@ class DomainController extends Controller
     public function create()
     {
         $clients = Client::all()->sortBy('name')->pluck('name', 'id');
-        $services = Service::all()->sortBy('name')->pluck('name', 'id');
 
         return view('domain.create', compact('clients', 'services'));
     }
@@ -64,7 +63,6 @@ class DomainController extends Controller
 
         return Redirect::to('/')
             ->with('success', $message);
-
     }
 
     /**
@@ -76,6 +74,8 @@ class DomainController extends Controller
     public function edit($id)
     {
         $domain = Domain::where(['id' => $id])->first();
+
+        // @todo - need to get the correct client
         $clients = Client::all()->sortBy('name')->pluck('name', 'id');
 
         return view('domain.edit', compact('domain', 'clients'));
@@ -90,7 +90,6 @@ class DomainController extends Controller
      */
     public function update(Request $request)
     {
-
         $request->validate([
             'domain_name' => 'required|max:255',
             'client_id' => 'required',

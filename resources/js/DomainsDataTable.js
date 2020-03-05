@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DataTable from "./components/DataTable";
 
-export default class ReactDataTableApp extends Component {
+export default class DomainsDataTable extends Component {
 
     constructor(props) {
         super(props);
@@ -28,7 +28,7 @@ export default class ReactDataTableApp extends Component {
         ];
 
         return (
-            <DataTable url="/api/v1/domains" columns={columns} actions={actions} />
+            <DataTable url="/api/v1/domains" tableClassName="domains-datatable" columns={columns} actions={actions} />
         );
     }
 }

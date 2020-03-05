@@ -33,6 +33,7 @@
 
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-secondary" href="{{ route('domain.index') }}">Cancel</a>
+            <a class="btn alert-danger pull-right" href="{{ route('domain.destroy', $domain->id) }}">Delete</a>
 
         </form>
     </div>

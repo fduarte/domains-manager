@@ -34,7 +34,7 @@ class DomainController extends Controller
     {
         $clients = Client::all()->sortBy('name')->pluck('name', 'id');
 
-        return view('domain.create', compact('clients', 'services'));
+        return view('domain.create', compact('clients'));
     }
 
     /**

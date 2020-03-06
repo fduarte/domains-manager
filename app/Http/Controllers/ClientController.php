@@ -45,7 +45,7 @@ class ClientController extends Controller
             'name' => 'required|max:255',
             'company_name' => 'required|max:255',
             'email' => 'required|max:255',
-            'phone' => 'min:10|max:15',
+            'phone' => 'numeric:digits_between:9,15',
         ]);
 
         $client = Client::create($request->all());
@@ -91,8 +91,8 @@ class ClientController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'company_name' => 'required|max:255',
-            'email' => 'required|max:255',
-            'phone' => 'min:10|max:15',
+            'email' => 'required|max:255|email',
+            'phone' => 'numeric:digits_between:9,15',
         ]);
 
         $update = [

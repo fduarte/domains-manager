@@ -19,7 +19,6 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
-
         $query = Domain::join('clients as client', 'client_id', '=', 'client.id')
             ->orderBy($request->column, $request->order)
             ->select('domains.*')
@@ -29,11 +28,24 @@ class DomainController extends Controller
         return DomainResource::collection($query);
     }
 
+    /**
+     * Not being used
+     */
+    public function create()
+    {
+        $domain = new Domain();
+        $domain->domain_name = request('domain_name');
+        $domain->domain_created_date = request('domain_created_date');
+    }
+
+    /**
+     * Not being used
+     * @param Request $request
+     */
     public function store(Request $request)
     {
         $request->validate([
             'domain_name' => 'required|max:255',
-
         ]);
 
         $data = $request->all();
@@ -49,16 +61,13 @@ class DomainController extends Controller
         $domain->create($data);
     }
 
+    /**
+     * Not being used
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function add()
     {
         return view('domains.add');
-    }
-
-    public function create()
-    {
-        $domain = new Domain();
-        $domain->domain_name = request('domain_name');
-        $domain->domain_created_date = request('domain_created_date');
     }
 
 }

@@ -11,20 +11,45 @@
 |
 */
 
-Route::get('/', function () {
-    return view('app');
-});
+// Domains
+Route::get('/', 'DomainController@index')->name('domain.index');
+Route::get('/domain/add', 'DomainController@add');
+Route::get('/domain/create', 'DomainController@create');
+Route::get('/domain/{id}/edit', 'DomainController@edit');
+Route::post('/domain/store', 'DomainController@store')->name('domain.store');
+Route::post('/domain/update', 'DomainController@update')->name('domain.update');
+Route::get('/domain/{id}/destroy', 'DomainController@destroy')->name('domain.destroy');
 
-Route::get('/', 'DomainsController@index');
-Route::get('/domain/add', 'DomainsController@add');
-Route::get('/domain/create', 'DomainsController@create');
+// This route hits an internal API gateway to the WHOIS API, which in turn returns domain related data
+Route::get('domain/{url}/refresh', 'WhoisController@getData')->name('domain.refresh');
+
+// Clients
+Route::get('/clients', 'ClientController@index')->name('client.index');
+Route::get('/client/add', 'ClientController@@add');
+Route::get('/client/create', 'ClientController@create');
+Route::get('/client/{id}/edit', 'ClientController@edit');
+Route::post('/client/store', 'ClientController@store')->name('client.store');
+Route::post('/client/update', 'ClientController@update')->name('client.update');
+Route::get('/client/{id}/destroy', 'ClientController@destroy')->name('client.destroy');
+
+// Services
+Route::get('/services', 'ServiceController@index')->name('service.index');
+Route::get('/service/add', 'ServiceController@@add');
+Route::get('/service/create', 'ServiceController@create');
+Route::get('/service/{id}/edit', 'ServiceController@edit');
+Route::post('/service/store', 'ServiceController@store')->name('service.store');
+Route::post('/service/update', 'ServiceController@update')->name('service.update');
+Route::get('/service/{id}/destroy', 'ServiceController@destroy')->name('service.destroy');
+
+
+///**
+// * This is a sentry test route
+// */
+//Route::get('/debug-sentry', function () {
+//    throw new Exception('My first Sentry error!');
+//});
 
 /*
-Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
-*/
-
 Route::get('/redirect', function (\Illuminate\Http\Request $request) {
     $request->session()->put('state', $state = \Illuminate\Support\Str::random(40));
 
@@ -38,6 +63,5 @@ Route::get('/redirect', function (\Illuminate\Http\Request $request) {
 
     return redirect('http://domains-manager.test/oauth/authorize?'.$query);
 });
+*/
 
-// Domains resources (i.e data to populate datatables)
-Route::resource('domain', 'DomainsController');

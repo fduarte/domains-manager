@@ -17,15 +17,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::get('/v1/clients', function(Request $request) {
-  return 'S T U D E N T S';
-});
-
 Route::post('/v1/register', 'Api\AuthController@register');
 Route::post('/login', 'Api\AuthController@login');
 
-Route::get('/v1/domains', 'Api\DomainsController@index', function() {
+/*
+Route::get('/v1/domains', 'Api\DomainController@index', function() {
 })->middleware('auth:api');
+*/
 
+Route::get('/v1/domains', 'Api\DomainController@index', function() {});
+Route::get('/v1/clients', 'Api\ClientController@index', function() {});
+Route::get('/v1/services', 'Api\ServiceController@index', function() {});
+
+// WHOIS 3rd party integration
 Route::get('/v1/whois', 'Api\WhoisController@getData', function() {});
+

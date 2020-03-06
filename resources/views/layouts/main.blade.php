@@ -11,7 +11,6 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
         <link rel="stylesheet" href="/css/app.css" />
 
     </head>
@@ -28,6 +27,7 @@
                 <div class="navbar-nav ml-auto">
                     <a class="nav-item nav-link" href="/">Domains</a>
                     <a class="nav-item nav-link" href="/clients">Clients</a>
+                    <a class="nav-item nav-link" href="/services">Services</a>
                     @if (Route::has('login'))
                         <div class="top-right links">
                             @auth
@@ -48,11 +48,29 @@
         <div id="loader"></div>
 
         <div class="row mt-5">
-            <div class="col-10">
+            <div class="col-12 mb-5">
 
-                @if (session('status'))
-                    <div class="alert">
-                        {{ session('status') }}
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                {{-- Display errors --}}
+                @if (count($errors) > 0)
+                    <div class="alert alert-danger">
+                        <h3>Please correct the following issues:</h3>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 
@@ -66,9 +84,8 @@
 
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" ></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/js/custom.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     @stack('scripts')
 

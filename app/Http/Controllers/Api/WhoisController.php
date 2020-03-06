@@ -55,21 +55,28 @@ class WhoisController extends Controller
             $expiresDate = Carbon::createFromFormat('d/m/Y H:i:s', $expiresDate)->format('Y-m-d');
             $createdDate = Carbon::createFromFormat('d/m/Y H:i:s', $createdDate)->format('Y-m-d');
         } else {
-            $message = 'WHOIS Expires/Created Date not available';
+            $message = 'WHOIS data not available';
             Log::error($message);
             return $message;
         }
 
+        $adminContactName = $res->WhoisRecord->registryData->administrativeContact->name ?? $res->WhoisRecord->administrativeContact->name ?? NULL;
+        $adminContactEmail = $res->WhoisRecord->contactEmail ?? NULL;
+        $domainStatus = $res->WhoisRecord->registryData->status ?? $res->WhoisRecord->status ?? NULL;
+
+        $updateData = [
+            'domain_expires_date' => $expiresDate,
+            'domain_created_date' => $createdDate,
+            'domain_status' => $domainStatus,
+            'admin_contact_name' => $adminContactName,
+            'admin_contact_email' => $adminContactEmail
+        ];
+
         $domain = Domain::where('domain_name', $domainName)
-                        ->update([
-                            'domain_expires_date' => $expiresDate,
-                            'domain_created_date' => $createdDate
-                        ]);
+                        ->update($updateData);
 
         Log::info('WHOIS call successful and domain updated: ' . $domainName);
 
-        return response()->json([
-            'status' => 'OK'
-        ]);
+        return response()->json($updateData);
     }
 }

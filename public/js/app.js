@@ -51322,6 +51322,92 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/ServicesDataTable.js":
+/*!*******************************************!*\
+  !*** ./resources/js/ServicesDataTable.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ServicesDataTable; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_DataTable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/DataTable */ "./resources/js/components/DataTable.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var ServicesDataTable =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ServicesDataTable, _Component);
+
+  function ServicesDataTable(props) {
+    _classCallCheck(this, ServicesDataTable);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ServicesDataTable).call(this, props));
+  }
+
+  _createClass(ServicesDataTable, [{
+    key: "render",
+    value: function render() {
+      var columns = [{
+        fieldName: 'name',
+        headerName: 'Name'
+      }, {
+        fieldName: 'price',
+        headerName: 'Price'
+      }];
+      var iconEdit = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-edit"
+      });
+      var iconDelete = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-trash"
+      });
+      var actions = [{
+        action: 'edit',
+        baseUrl: 'service',
+        icon: iconEdit
+      }, {
+        action: 'destroy',
+        baseUrl: 'service',
+        icon: iconDelete
+      }];
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_DataTable__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        url: "/api/v1/services",
+        tableClassName: "services-datatable",
+        columns: columns,
+        actions: actions
+      });
+    }
+  }]);
+
+  return ServicesDataTable;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -51337,6 +51423,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _DomainsDataTable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DomainsDataTable */ "./resources/js/DomainsDataTable.js");
 /* harmony import */ var _ClientsDataTable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ClientsDataTable */ "./resources/js/ClientsDataTable.js");
+/* harmony import */ var _ServicesDataTable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ServicesDataTable */ "./resources/js/ServicesDataTable.js");
 
 
 
@@ -51349,12 +51436,17 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
+
 if (document.getElementById('domains-datatable')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DomainsDataTable__WEBPACK_IMPORTED_MODULE_2__["default"], null), document.getElementById('domains-datatable'));
 }
 
 if (document.getElementById('clients-datatable')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ClientsDataTable__WEBPACK_IMPORTED_MODULE_3__["default"], null), document.getElementById('clients-datatable'));
+}
+
+if (document.getElementById('services-datatable')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ServicesDataTable__WEBPACK_IMPORTED_MODULE_4__["default"], null), document.getElementById('services-datatable'));
 }
 
 /***/ }),

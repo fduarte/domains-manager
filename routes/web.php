@@ -11,10 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('app');
-});
-
+// Domains
 Route::get('/', 'DomainController@index')->name('domain.index');
 Route::get('/domain/add', 'DomainController@add');
 Route::get('/domain/create', 'DomainController@create');
@@ -26,7 +23,7 @@ Route::get('/domain/{id}/destroy', 'DomainController@destroy')->name('domain.des
 // This route hits an internal API gateway to the WHOIS API, which in turn returns domain related data
 Route::get('domain/{url}/refresh', 'WhoisController@getData')->name('domain.refresh');
 
-//Route::resource('clients', 'ClientController');
+// Clients
 Route::get('/clients', 'ClientController@index')->name('client.index');
 Route::get('/client/add', 'ClientController@@add');
 Route::get('/client/create', 'ClientController@create');
@@ -35,15 +32,14 @@ Route::post('/client/store', 'ClientController@store')->name('client.store');
 Route::post('/client/update', 'ClientController@update')->name('client.update');
 Route::get('/client/{id}/destroy', 'ClientController@destroy')->name('client.destroy');
 
-/*
-Route::get('/clients', 'ClientController@index')->name('client.index');
-Route::get('/client/add', 'ClientController@add');
-Route::get('/client/create', 'ClientController@create');
-Route::get('/client/{id}/edit', 'ClientController@edit');
-Route::post('/client/store', 'ClientController@store')->name('client.store');
-Route::post('/client/update', 'ClientController@update')->name('client.store');
-Route::get('/client/{id}/destroy', 'ClientController@destroy')->name('client.destroy');
-*/
+// Services
+Route::get('/services', 'ServiceController@index')->name('service.index');
+Route::get('/service/add', 'ServiceController@@add');
+Route::get('/service/create', 'ServiceController@create');
+Route::get('/service/{id}/edit', 'ServiceController@edit');
+Route::post('/service/store', 'ServiceController@store')->name('service.store');
+Route::post('/service/update', 'ServiceController@update')->name('service.update');
+Route::get('/service/{id}/destroy', 'ServiceController@destroy')->name('service.destroy');
 
 
 ///**
@@ -69,5 +65,3 @@ Route::get('/redirect', function (\Illuminate\Http\Request $request) {
 });
 */
 
-// Domains resources (i.e data to populate datatables)
-//Route::resource('domain', 'DomainController');
